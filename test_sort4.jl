@@ -51,7 +51,7 @@ function readfiles()
     for i in 1:6
         counter = 0
         print("File ", i)
-        filename = "C:/data/KKG/KKG PSR/Task3Subtask3/sort/all_seqs$i.csv"
+        filename = "./all_seqs$i.csv"
         open(filename) do file
             for line in eachline(file)
                 push!(lines,line)
@@ -65,6 +65,9 @@ function readfiles()
     return lines
 end
 
+# This function goes through and divides the lines from the CSV files into 
+# Riskman sequences and the split fractions (basic events) that constitute them.
+# It also makes a list of all the initiating events used in these sequences.
 function process_lines(lines)
     BEs = Dict() # unique basic events
     inits = Dict() # initiating events
@@ -194,12 +197,17 @@ function find_repeats(group)
     return repeats
 end
 
+# This function is for outputting all the sorted sequences into CSV files,
+# which can be imported into Excel. The stuff in the first line is all
+# formatting hints for creating conditional formatting rules in Excel, so
+# that for instance any split fraction that makes the sequence non-minimal 
+# can be colored blue.
 function print_to_csv(groups, BEs)
     # nonmins = ["CLATEC", "CLATED", "DPACC1", "OAMIS1", "CFCFB", "DCH", "TIVR1"]
     # Each initiator will have multiple sequence groups
     for (init,grouplist) in groups
         # Make one output CSV file for the whole event tree
-        filename = "C:/data/KKG/KKG PSR/Task3Subtask3/sort/outputs2/$init-groups.csv"
+        filename = "./outputs2/$init-groups.csv"
         output = ""
         for groupnum in 1:length(grouplist)
             # if init == "ISA"
@@ -508,5 +516,5 @@ if firstrun # will always be true b/c i set it earlier, i think
     # better version of that
     @where(seqs_by_init["L400KV"], :Seqnum .== 9760)[:Evts][1]
 
-    print(replace("=IF(INDEX(ISA!C:C,MATCH(A6,ISA!A:A,0))>0,INDEX(ISA!C:C,MATCH(A6,ISA!A:A,0)),\"\")","ISA"=>"LOWKI"))
+    #print(replace("=IF(INDEX(ISA!C:C,MATCH(A6,ISA!A:A,0))>0,INDEX(ISA!C:C,MATCH(A6,ISA!A:A,0)),\"\")","ISA"=>"LOWKI"))
 end
